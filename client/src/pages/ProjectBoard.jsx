@@ -269,7 +269,7 @@ const ProjectBoard = () => {
               <Layout className="w-7 h-7 text-accent" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold font-heading mb-1">{project??.name}</h1>
+              <h1 className="text-3xl font-bold font-heading mb-1">{project?.name}</h1>
               <div className="flex items-center gap-6 text-xs text-muted/60 font-bold uppercase tracking-widest">
                 <div className="flex items-center gap-2">
                   <UsersIcon className="w-3.5 h-3.5" />

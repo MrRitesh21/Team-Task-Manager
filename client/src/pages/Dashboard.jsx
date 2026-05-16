@@ -219,7 +219,7 @@ const Dashboard = () => {
                   )}
                   <div className="relative shrink-0">
                     <img 
-                      src={activity.assignee??.avatar || `https://ui-avatars.com/api/?name=${activity.assignee??.name || 'U'}&background=4F8EF7&color=fff`} 
+                      src={activity.assignee?.avatar || `https://ui-avatars.com/api/?name=${activity.assignee?.name || 'U'}&background=4F8EF7&color=fff`} 
                       alt="" 
                       className="w-10 h-10 rounded-xl object-cover ring-2 ring-white/5 shadow-2xl"
                     />
@@ -229,7 +229,7 @@ const Dashboard = () => {
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
                     <p className="text-sm text-gray-300 leading-tight">
-                      <span className="font-bold text-white">{activity.assignee??.name || 'Someone'}</span>
+                      <span className="font-bold text-white">{activity.assignee?.name || 'Someone'}</span>
                       <span className="text-muted mx-1.5">modified</span>
                       <span className="text-accent font-medium hover:underline cursor-pointer">"{activity.title}"</span>
                     </p>

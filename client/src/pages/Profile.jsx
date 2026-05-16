@@ -16,8 +16,8 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [passLoading, setPassLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: user??.name || '',
-    avatar: user??.avatar || ''
+    name: user?.name || '',
+    avatar: user?.avatar || ''
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -73,7 +73,7 @@ const Profile = () => {
           <div className="card text-center flex flex-col items-center">
             <div className="relative mb-4 group">
               <img 
-                src={user??.avatar || `https://ui-avatars.com/api/?name=${user??.name}&background=4F8EF7&color=fff&size=200`} 
+                src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&background=4F8EF7&color=fff&size=200`} 
                 alt="" 
                 className="w-32 h-32 rounded-full border-4 border-accent/20 object-cover"
               />
@@ -81,7 +81,7 @@ const Profile = () => {
                 <Camera className="w-8 h-8 text-white" />
               </div>
             </div>
-            <h2 className="text-xl font-bold">{user??.name}</h2>
+            <h2 className="text-xl font-bold">{user?.name}</h2>
             <p className="text-sm text-muted mb-6">{user?.email}</p>
             
             <div className="w-full pt-6 border-t border-gray-800 space-y-4">

@@ -150,12 +150,12 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
                 <p className="label">Assigned To</p>
                 <div className="flex items-center gap-3 group cursor-pointer p-2 -m-2 rounded-xl hover:bg-white/5 transition-colors">
                   <img 
-                    src={task.assignee??.avatar || `https://ui-avatars.com/api/?name=${task.assignee??.name || 'U'}&background=4F8EF7&color=fff`} 
+                    src={task.assignee?.avatar || `https://ui-avatars.com/api/?name=${task.assignee?.name || 'U'}&background=4F8EF7&color=fff`} 
                     className="w-10 h-10 rounded-xl ring-2 ring-white/5"
                     alt=""
                   />
                   <div>
-                    <p className="text-sm font-bold">{task.assignee??.name || 'Unassigned'}</p>
+                    <p className="text-sm font-bold">{task.assignee?.name || 'Unassigned'}</p>
                     <p className="text-[10px] text-muted uppercase tracking-wider font-medium">{task.assignee ? 'Responsible' : 'Awaiting Assignment'}</p>
                   </div>
                 </div>

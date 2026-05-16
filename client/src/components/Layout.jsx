@@ -105,15 +105,15 @@ const Layout = () => {
               <div className="flex items-center gap-3 mb-4">
                 <div className="relative">
                   <img 
-                    src={user??.avatar || `https://ui-avatars.com/api/?name=${user??.name}&background=4F8EF7&color=fff`} 
-                    alt={user??.name}
+                    src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&background=4F8EF7&color=fff`} 
+                    alt={user?.name}
                     className="w-10 h-10 rounded-xl object-cover"
                   />
                   <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-surface rounded-full"></div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate">{user??.name}</p>
-                  <p className="text-[10px] text-muted truncate uppercase tracking-wider">{user??.email?.split('@')[0]}</p>
+                  <p className="text-sm font-bold truncate">{user?.name}</p>
+                  <p className="text-[10px] text-muted truncate uppercase tracking-wider">{user?.email?.split('@')[0]}</p>
                 </div>
               </div>
               <button

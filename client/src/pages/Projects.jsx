@@ -122,7 +122,7 @@ const Projects = () => {
                     {project.members?.slice(0, 3)?.map((m, i) => (
                       <img 
                         key={i} 
-                        src={m.user??.avatar || `https://i.pravatar.cc/100?u=${m.userId}`} 
+                        src={m.user?.avatar || `https://i.pravatar.cc/100?u=${m.userId}`} 
                         className="w-8 h-8 rounded-lg border-2 border-[#050505] object-cover" 
                         alt="" 
                       />
