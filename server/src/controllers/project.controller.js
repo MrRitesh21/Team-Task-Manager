@@ -212,22 +212,41 @@ const removeMember = async (req, res) => {
   }
 };
 
-const updateMemberRole = async (req, res) => {
-  const { id: projectId, userId } = req.params;
-  const { role } = req.body;
+const joinProjectByCode = async (req, res) => {
+  const { inviteCode } = req.body;
+  const userId = req.user.id;
 
   try {
-    const member = await prisma.projectMember.update({
+    const project = await prisma.project.findUnique({
+      where: { inviteCode }
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: 'Invalid invite code.' });
+    }
+
+    const existingMember = await prisma.projectMember.findUnique({
       where: {
         userId_projectId: {
           userId,
-          projectId
+          projectId: project.id
         }
-      },
-      data: { role }
+      }
     });
 
-    res.json(member);
+    if (existingMember) {
+      return res.status(400).json({ error: 'You are already a member of this project.' });
+    }
+
+    await prisma.projectMember.create({
+      data: {
+        userId,
+        projectId: project.id,
+        role: 'MEMBER'
+      }
+    });
+
+    res.json({ message: 'Successfully joined the project!', projectId: project.id });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error.' });
   }
@@ -241,5 +260,6 @@ module.exports = {
   deleteProject,
   addMember,
   removeMember,
-  updateMemberRole
+  updateMemberRole,
+  joinProjectByCode
 };

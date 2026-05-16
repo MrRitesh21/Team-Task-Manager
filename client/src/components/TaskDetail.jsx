@@ -13,14 +13,17 @@ import {
   Layers,
   ChevronRight,
   MoreVertical,
-  CheckCircle2
+  CheckCircle2,
+  Trash2
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TaskDetail = ({ taskId, onClose, onUpdate }) => {
+  const { user: currentUser } = useAuth();
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState('');
@@ -64,6 +67,16 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
       onUpdate();
     } catch (error) {
       toast.error('Update failed');
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await api.delete(`tasks/comments/${commentId}`);
+      toast.success('Comment deleted');
+      fetchTask();
+    } catch (error) {
+      toast.error('Failed to delete comment');
     }
   };
 
@@ -209,7 +222,14 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
                       <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-5 group-hover:bg-white/[0.05] transition-all">
                         <div className="flex items-center justify-between mb-3">
                           <p className="text-sm font-bold">{comment.author?.name}</p>
-                          <p className="text-[10px] text-muted font-bold uppercase tracking-wider">{format(new Date(comment.createdAt), 'MMM d, h:mm a')}</p>
+                          <div className="flex items-center gap-3">
+                            <p className="text-[10px] text-muted font-bold uppercase tracking-wider">{format(new Date(comment.createdAt), 'MMM d, h:mm a')}</p>
+                            {comment.authorId === currentUser?.id && (
+                              <button onClick={() => handleDeleteComment(comment.id)} className="p-1 hover:text-rose-500 transition-colors">
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
                         </div>
                         <p className="text-sm text-gray-300 leading-relaxed">{comment.content}</p>
                       </div>

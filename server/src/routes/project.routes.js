@@ -20,6 +20,7 @@ router.post('/', createProject);
 router.get('/:id', getProjectById);
 router.patch('/:id', requireProjectRole('ADMIN'), updateProject);
 router.delete('/:id', requireProjectRole('ADMIN'), deleteProject);
+router.post('/join', joinProjectByCode);
 
 router.post('/:id/members', requireProjectRole('ADMIN'), addMember);
 router.delete('/:id/members/:userId', requireProjectRole('ADMIN'), removeMember);

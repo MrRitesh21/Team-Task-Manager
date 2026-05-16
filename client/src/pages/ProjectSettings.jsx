@@ -7,6 +7,7 @@ import {
   AlertTriangle, 
   Shield, 
   User, 
+  Users as UsersIcon,
   Loader2,
   Mail,
   X
@@ -147,6 +148,27 @@ const ProjectSettings = () => {
             </button>
           </div>
         </form>
+
+        <div className="card bg-purple-500/5 border-purple-500/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-6 mt-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+              <UsersIcon className="w-6 h-6 text-purple-500" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-purple-500 uppercase tracking-widest mb-1">Invite Code</p>
+              <p className="text-2xl font-mono font-bold text-white tracking-widest">{project.inviteCode}</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => {
+              navigator.clipboard.writeText(project.inviteCode);
+              toast.success('Invite code copied!');
+            }}
+            className="btn bg-purple-500 hover:bg-purple-600 text-white font-bold h-12 px-8"
+          >
+            Copy Code
+          </button>
+        </div>
       </section>
 
       {/* Team Members */}

@@ -24,7 +24,9 @@ const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showJoinModal, setShowJoinModal] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', description: '' });
+  const [inviteCode, setInviteCode] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -58,6 +60,22 @@ const Projects = () => {
     }
   };
 
+  const handleJoin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await api.post('projects/join', { inviteCode });
+      toast.success('Joined project successfully!');
+      setInviteCode('');
+      setShowJoinModal(false);
+      fetchProjects();
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to join project');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredProjects = projects.filter(p => p?.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   if (loading && projects.length === 0) {
@@ -82,16 +100,13 @@ const Projects = () => {
           <p className="text-muted text-lg mt-2">Manage and coordinate your team efforts in one place.</p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="relative group min-w-[240px]">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-focus-within:text-accent transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Filter projects..." 
-              className="glass-input pl-11 h-12 text-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          <button 
+            onClick={() => setShowJoinModal(true)}
+            className="btn btn-secondary h-12 px-6 flex items-center gap-2 text-sm font-bold tracking-wide"
+          >
+            <UsersIcon className="w-5 h-5" />
+            <span>JOIN WITH CODE</span>
+          </button>
           <button 
             onClick={() => setShowCreateModal(true)}
             className="btn btn-primary h-12 px-6 flex items-center gap-2 text-sm font-bold tracking-wide"
@@ -200,6 +215,40 @@ const Projects = () => {
                   <button type="button" onClick={() => setShowCreateModal(false)} className="btn btn-secondary h-12 px-8 font-bold">CANCEL</button>
                   <button type="submit" disabled={loading} className="btn btn-primary h-12 px-10 font-bold tracking-widest uppercase text-xs">
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'LAUNCH PROJECT'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      
+      <AnimatePresence>
+        {showJoinModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowJoinModal(false)} />
+            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="glass-card w-full max-w-lg relative z-10 p-10 border-white/20">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+                    <UsersIcon className="w-6 h-6 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-bold font-heading">Join Project</h2>
+                </div>
+                <button onClick={() => setShowJoinModal(false)} className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all">
+                  <Plus className="w-5 h-5 text-muted rotate-45" />
+                </button>
+              </div>
+              <form onSubmit={handleJoin} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="label">Invite Code</label>
+                  <input type="text" required autoFocus className="glass-input text-center text-2xl font-mono tracking-widest uppercase" placeholder="ABC-123-XYZ" value={inviteCode} onChange={e => setInviteCode(e.target.value.toUpperCase())} />
+                  <p className="text-[10px] text-muted text-center uppercase tracking-widest mt-2 font-bold">Paste the code provided by your project admin</p>
+                </div>
+                <div className="flex justify-end gap-4 mt-10">
+                  <button type="button" onClick={() => setShowJoinModal(false)} className="btn btn-secondary h-12 px-8 font-bold">CANCEL</button>
+                  <button type="submit" disabled={loading} className="btn bg-purple-500 hover:bg-purple-600 text-white h-12 px-10 font-bold tracking-widest uppercase text-xs">
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'JOIN PROJECT'}
                   </button>
                 </div>
               </form>
