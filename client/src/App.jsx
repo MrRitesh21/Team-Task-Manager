@@ -34,9 +34,13 @@ function App() {
           position="bottom-right"
           toastOptions={{
             style: {
-              background: '#1A1D27',
+              background: 'rgba(26, 29, 39, 0.8)',
+              backdropFilter: 'blur(12px)',
               color: '#fff',
-              border: '1px solid #374151',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '16px',
+              fontSize: '14px',
+              fontWeight: '500',
             },
           }}
         />

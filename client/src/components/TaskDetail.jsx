@@ -2,32 +2,29 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { 
   X, 
-  Calendar, 
+  Clock, 
   User, 
-  AlertCircle, 
-  CheckCircle2, 
-  MoreVertical,
-  Trash2,
-  Send,
+  Tag, 
+  MessageSquare, 
+  Send, 
+  Trash2, 
   Loader2,
-  Clock,
-  ChevronDown
+  Calendar,
+  Layers,
+  ChevronRight,
+  MoreVertical,
+  CheckCircle2
 } from 'lucide-react';
 import { format } from 'date-fns';
-import { toast } from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
-import { useAuth } from '../context/AuthContext';
-import { clsx } from 'clsx';
+import { toast } from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const TaskDetail = ({ taskId, onClose, onUpdate }) => {
-  const { user: currentUser } = useAuth();
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
-  const [description, setDescription] = useState('');
   const [newComment, setNewComment] = useState('');
   const [commenting, setCommenting] = useState(false);
-  const [updating, setUpdating] = useState(null); // 'status', 'priority', etc.
 
   useEffect(() => {
     fetchTask();
@@ -37,7 +34,6 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
     try {
       const { data } = await api.get(`/tasks/${taskId}`);
       setTask(data);
-      setDescription(data.description || '');
     } catch (error) {
       toast.error('Failed to load task details');
       onClose();
@@ -46,44 +42,14 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
     }
   };
 
-  const handleUpdate = async (updates) => {
-    const field = Object.keys(updates)[0];
-    setUpdating(field);
-    try {
-      const { data } = await api.patch(`/tasks/${taskId}`, updates);
-      setTask(prev => ({ ...prev, ...data }));
-      onUpdate();
-    } catch (error) {
-      toast.error('Update failed');
-    } finally {
-      setUpdating(null);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this task?')) return;
-    try {
-      await api.delete(`/tasks/${taskId}`);
-      toast.success('Task deleted');
-      onUpdate();
-      onClose();
-    } catch (error) {
-      toast.error('Failed to delete task');
-    }
-  };
-
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
     setCommenting(true);
     try {
-      const { data } = await api.post(`/tasks/${taskId}/comments`, { content: newComment });
-      setTask(prev => ({
-        ...prev,
-        comments: [...prev.comments, data]
-      }));
+      await api.post(`/tasks/${taskId}/comments`, { content: newComment });
       setNewComment('');
-      onUpdate(); // To refresh comment count on board
+      fetchTask();
     } catch (error) {
       toast.error('Failed to add comment');
     } finally {
@@ -91,197 +57,182 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
     }
   };
 
-  if (loading) return null;
+  const updateTask = async (updates) => {
+    try {
+      await api.patch(`/tasks/${taskId}`, updates);
+      fetchTask();
+      onUpdate();
+    } catch (error) {
+      toast.error('Update failed');
+    }
+  };
 
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'DONE';
+  if (loading) {
+    return (
+      <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-surface/80 backdrop-blur-3xl z-50 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-accent" />
+      </div>
+    );
+  }
 
   return (
-    <div className="fixed inset-y-0 right-0 z-[80] w-full max-w-xl bg-surface border-l border-gray-800 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-800 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className={clsx(
-            "w-8 h-8 rounded-lg flex items-center justify-center",
-            task.status === 'DONE' ? 'bg-green-500/10 text-green-500' : 'bg-accent/10 text-accent'
-          )}>
-            {task.status === 'DONE' ? <CheckCircle2 className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
-          </div>
-          <span className="text-sm font-medium text-muted">TASK-{task.id.slice(0, 4).toUpperCase()}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button onClick={handleDelete} className="p-2 text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors">
-            <Trash2 className="w-5 h-5" />
-          </button>
-          <button onClick={onClose} className="p-2 text-muted hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto p-6 space-y-8">
-        {/* Title */}
-        <div>
-          <textarea
-            className="w-full bg-transparent text-2xl font-bold font-heading focus:outline-none resize-none overflow-hidden"
-            rows={1}
-            value={task.title}
-            onChange={(e) => setTask({ ...task, title: e.target.value })}
-            onBlur={(e) => handleUpdate({ title: e.target.value })}
-          />
-        </div>
-
-        {/* Props Grid */}
-        <div className="grid grid-cols-2 gap-y-6 gap-x-12">
-          <div className="space-y-1.5">
-            <label className="label flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" /> Status
-            </label>
-            <select
-              className="w-full bg-background border border-gray-700 rounded-lg px-3 py-1.5 text-sm appearance-none focus:border-accent outline-none"
-              value={task.status}
-              onChange={(e) => handleUpdate({ status: e.target.value })}
-              disabled={updating === 'status'}
-            >
-              <option value="TODO">To Do</option>
-              <option value="IN_PROGRESS">In Progress</option>
-              <option value="IN_REVIEW">In Review</option>
-              <option value="DONE">Done</option>
-            </select>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="label flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" /> Priority
-            </label>
-            <select
-              className="w-full bg-background border border-gray-700 rounded-lg px-3 py-1.5 text-sm appearance-none focus:border-accent outline-none"
-              value={task.priority}
-              onChange={(e) => handleUpdate({ priority: e.target.value })}
-              disabled={updating === 'priority'}
-            >
-              <option value="LOW">Low</option>
-              <option value="MEDIUM">Medium</option>
-              <option value="HIGH">High</option>
-              <option value="URGENT">Urgent</option>
-            </select>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="label flex items-center gap-2">
-              <User className="w-4 h-4" /> Assignee
-            </label>
-            <div className="flex items-center gap-2 px-1">
-              <img 
-                src={task.assignee?.avatar || `https://ui-avatars.com/api/?name=${task.assignee?.name || 'Unassigned'}&background=4F8EF7&color=fff`} 
-                alt="" 
-                className="w-6 h-6 rounded-full"
-              />
-              <span className="text-sm">{task.assignee?.name || 'Unassigned'}</span>
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-black/60 backdrop-blur-md" 
+        onClick={onClose} 
+      />
+      <motion.div 
+        initial={{ x: '100%' }} 
+        animate={{ x: 0 }} 
+        exit={{ x: '100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        className="relative w-full max-w-2xl bg-[#080808] border-l border-white/5 shadow-[-50px_0_100px_rgba(0,0,0,0.5)] flex flex-col"
+      >
+        {/* Header */}
+        <div className="h-24 px-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02] sticky top-0 z-10 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-accent/10 border border-accent/20 rounded-xl flex items-center justify-center">
+              <Layers className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-muted/60 uppercase tracking-widest mb-0.5">Project Task</p>
+              <h2 className="text-xl font-bold font-heading">Details</h2>
             </div>
           </div>
-
-          <div className="space-y-1.5">
-            <label className="label flex items-center gap-2">
-              <Calendar className="w-4 h-4" /> Due Date
-            </label>
-            <div className={clsx(
-              "text-sm font-medium px-1",
-              isOverdue ? "text-red-500" : "text-white"
-            )}>
-              {task.dueDate ? format(new Date(task.dueDate), 'MMMM d, yyyy') : 'No due date'}
-            </div>
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="space-y-3">
-          <label className="label uppercase tracking-widest text-[10px] font-bold">Description</label>
-          {isEditingDescription ? (
-            <div className="space-y-2">
-              <textarea
-                className="input min-h-[150px] py-3 text-sm"
-                autoFocus
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <div className="flex gap-2 justify-end">
-                <button 
-                  onClick={() => {
-                    setDescription(task.description || '');
-                    setIsEditingDescription(false);
-                  }}
-                  className="btn btn-secondary text-xs px-3 py-1"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={() => {
-                    handleUpdate({ description });
-                    setIsEditingDescription(false);
-                  }}
-                  className="btn btn-primary text-xs px-3 py-1"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div 
-              onClick={() => setIsEditingDescription(true)}
-              className="prose prose-invert prose-sm max-w-none p-4 rounded-xl bg-background/50 border border-transparent hover:border-gray-700 cursor-pointer transition-colors min-h-[100px]"
-            >
-              {task.description ? (
-                <ReactMarkdown>{task.description}</ReactMarkdown>
-              ) : (
-                <p className="text-muted italic">No description provided. Click to add one...</p>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Comments */}
-        <div className="space-y-6 pt-4 border-t border-gray-800">
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            Comments
-            <span className="bg-gray-800 text-muted px-2 py-0.5 rounded-full text-xs">{task.comments.length}</span>
-          </h3>
-
-          <form onSubmit={handleAddComment} className="relative">
-            <textarea
-              placeholder="Write a comment..."
-              className="input pr-12 py-3 text-sm min-h-[80px] resize-none"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-            />
-            <button 
-              type="submit"
-              disabled={commenting || !newComment.trim()}
-              className="absolute bottom-3 right-3 p-2 bg-accent text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
-            >
-              {commenting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+          <div className="flex items-center gap-4">
+            <button className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all">
+              <MoreVertical className="w-5 h-5 text-muted" />
             </button>
-          </form>
+            <button onClick={onClose} className="p-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 rounded-xl transition-all">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
 
-          <div className="space-y-6 pb-12">
-            {task.comments.map((comment) => (
-              <div key={comment.id} className="flex gap-4">
-                <img 
-                  src={comment.author.avatar || `https://ui-avatars.com/api/?name=${comment.author.name}&background=4F8EF7&color=fff`} 
-                  alt="" 
-                  className="w-8 h-8 rounded-full shrink-0"
-                />
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold">{comment.author.name}</span>
-                    <span className="text-[10px] text-muted">{format(new Date(comment.createdAt), 'MMM d, p')}</span>
+        <div className="flex-1 overflow-y-auto no-scrollbar">
+          <div className="p-10 space-y-12">
+            {/* Title Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${
+                  task.status === 'DONE' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-accent/10 text-accent border-accent/20'
+                }`}>
+                  {task.status.replace('_', ' ')}
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/5 text-muted/80 border border-white/10">
+                  {task.priority}
+                </span>
+              </div>
+              <h1 className="text-4xl font-bold font-heading leading-tight leading-relaxed">{task.title}</h1>
+            </div>
+
+            {/* Quick Info Grid */}
+            <div className="grid grid-cols-2 gap-8 py-8 border-y border-white/5">
+              <div className="space-y-3">
+                <p className="label">Assigned To</p>
+                <div className="flex items-center gap-3 group cursor-pointer p-2 -m-2 rounded-xl hover:bg-white/5 transition-colors">
+                  <img 
+                    src={task.assignee?.avatar || `https://ui-avatars.com/api/?name=${task.assignee?.name || 'U'}&background=4F8EF7&color=fff`} 
+                    className="w-10 h-10 rounded-xl ring-2 ring-white/5"
+                    alt=""
+                  />
+                  <div>
+                    <p className="text-sm font-bold">{task.assignee?.name || 'Unassigned'}</p>
+                    <p className="text-[10px] text-muted uppercase tracking-wider font-medium">{task.assignee ? 'Responsible' : 'Awaiting Assignment'}</p>
                   </div>
-                  <p className="text-sm text-gray-300 leading-relaxed">{comment.content}</p>
                 </div>
               </div>
-            ))}
+              <div className="space-y-3">
+                <p className="label">Due Date</p>
+                <div className="flex items-center gap-3 p-2 -m-2 rounded-xl hover:bg-white/5 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-accent" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold">{task.dueDate ? format(new Date(task.dueDate), 'MMMM d, yyyy') : 'Set a deadline'}</p>
+                    <p className="text-[10px] text-muted uppercase tracking-wider font-medium">Target Completion</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="label">Context & Background</p>
+                <button className="text-[10px] font-bold text-accent uppercase tracking-widest hover:underline">Edit Content</button>
+              </div>
+              <div className="prose prose-invert prose-sm max-w-none bg-white/[0.02] border border-white/5 rounded-2xl p-8 leading-relaxed">
+                {task.description ? (
+                  <ReactMarkdown>{task.description}</ReactMarkdown>
+                ) : (
+                  <p className="text-muted/50 italic">This task has no context provided yet...</p>
+                )}
+              </div>
+            </div>
+
+            {/* Comments Section */}
+            <div className="space-y-8">
+              <div className="flex items-center gap-3">
+                <MessageSquare className="w-5 h-5 text-accent" />
+                <h3 className="text-lg font-bold font-heading">Discussion</h3>
+                <span className="bg-white/5 border border-white/10 text-[10px] font-bold px-2 py-0.5 rounded-lg text-muted">{task.comments?.length || 0}</span>
+              </div>
+
+              <div className="space-y-6">
+                {task.comments?.map((comment) => (
+                  <div key={comment.id} className="flex gap-4 group">
+                    <img 
+                      src={comment.author.avatar || `https://ui-avatars.com/api/?name=${comment.author.name}&background=4F8EF7&color=fff`} 
+                      className="w-10 h-10 rounded-xl ring-2 ring-white/5"
+                      alt=""
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-5 group-hover:bg-white/[0.05] transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm font-bold">{comment.author.name}</p>
+                          <p className="text-[10px] text-muted font-bold uppercase tracking-wider">{format(new Date(comment.createdAt), 'MMM d, h:mm a')}</p>
+                        </div>
+                        <p className="text-sm text-gray-300 leading-relaxed">{comment.content}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <form onSubmit={handleAddComment} className="relative mt-8 group">
+                <div className="absolute inset-0 bg-accent/5 blur-2xl rounded-full group-focus-within:bg-accent/10 transition-all" />
+                <div className="relative flex items-center gap-4 bg-white/[0.05] border border-white/10 rounded-2xl p-4 focus-within:border-accent/50 focus-within:bg-white/[0.08] transition-all">
+                  <textarea
+                    rows="1"
+                    placeholder="Type your message..."
+                    className="flex-1 bg-transparent border-none focus:ring-0 text-sm resize-none py-2 px-1 max-h-32"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleAddComment(e);
+                      }
+                    }}
+                  />
+                  <button 
+                    type="submit" 
+                    disabled={commenting || !newComment.trim()}
+                    className="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center hover:scale-110 active:scale-95 disabled:opacity-50 disabled:scale-100 shadow-lg shadow-accent/20 transition-all shrink-0"
+                  >
+                    {commenting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-[10px] text-muted/50 mt-3 text-center uppercase tracking-widest font-bold">Press <span className="text-white">Enter</span> to send message</p>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

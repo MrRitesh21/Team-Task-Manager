@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { 
-  FolderPlus, 
-  Users, 
-  CheckSquare, 
+  FolderKanban, 
+  Plus, 
   MoreVertical, 
+  Users as UsersIcon, 
+  Calendar, 
+  Layout, 
   Loader2,
-  Plus
+  Search,
+  Grid,
+  List,
+  ArrowUpRight,
+  Command,
+  Sparkles
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', description: '' });
-  const [creating, setCreating] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchProjects();
@@ -35,142 +44,169 @@ const Projects = () => {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    setCreating(true);
+    setLoading(true);
     try {
-      const { data } = await api.post('/projects', newProject);
-      setProjects([data, ...projects]);
-      setShowModal(false);
-      setNewProject({ name: '', description: '' });
+      await api.post('/projects', newProject);
       toast.success('Project created!');
+      setNewProject({ name: '', description: '' });
+      setShowCreateModal(false);
+      fetchProjects();
     } catch (error) {
       toast.error('Failed to create project');
     } finally {
-      setCreating(false);
+      setLoading(false);
     }
   };
 
-  if (loading) {
+  const filteredProjects = projects.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  if (loading && projects.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+        <Loader2 className="w-10 h-10 animate-spin text-accent" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-12 max-w-[1600px] mx-auto pb-20">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold font-heading">Projects</h1>
-          <p className="text-muted">Manage and track all your team projects.</p>
-        </div>
-        <button 
-          onClick={() => setShowModal(true)}
-          className="btn btn-primary flex items-center justify-center gap-2"
-        >
-          <Plus className="w-5 h-5" />
-          <span>New Project</span>
-        </button>
-      </header>
-
-      {projects.length === 0 ? (
-        <div className="card flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-            <FolderPlus className="w-8 h-8 text-accent" />
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center shadow-lg shadow-accent/20">
+              <FolderKanban className="w-6 h-6 text-white" />
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">Organization Hub</p>
           </div>
-          <h3 className="text-xl font-bold mb-2">No projects yet</h3>
-          <p className="text-muted mb-6 max-w-sm">Create your first project to start organizing tasks and collaborating with your team.</p>
+          <h1 className="text-5xl font-bold font-heading">Projects</h1>
+          <p className="text-muted text-lg mt-2">Manage and coordinate your team efforts in one place.</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="relative group min-w-[240px]">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-focus-within:text-accent transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Filter projects..." 
+              className="glass-input pl-11 h-12 text-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
           <button 
-            onClick={() => setShowModal(true)}
-            className="btn btn-primary"
+            onClick={() => setShowCreateModal(true)}
+            className="btn btn-primary h-12 px-6 flex items-center gap-2 text-sm font-bold tracking-wide"
           >
-            Create Project
+            <Plus className="w-5 h-5" />
+            <span>CREATE NEW</span>
           </button>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <Link 
-              key={project.id} 
-              to={`/projects/${project.id}`}
-              className="card group hover:border-accent/50 transition-all duration-300 flex flex-col h-full"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent transition-colors">
-                  <FolderPlus className="w-5 h-5 text-accent group-hover:text-white transition-colors" />
-                </div>
-                <div className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                  project.role === 'ADMIN' ? 'bg-purple-500/10 text-purple-500' : 'bg-blue-500/10 text-blue-500'
-                }`}>
-                  {project.role}
-                </div>
-              </div>
-              
-              <h3 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors">{project.name}</h3>
-              <p className="text-sm text-muted line-clamp-2 mb-6 flex-1">{project.description || 'No description provided.'}</p>
-              
-              <div className="flex items-center gap-6 pt-4 border-t border-gray-800 text-sm text-muted">
-                <div className="flex items-center gap-1.5">
-                  <Users className="w-4 h-4" />
-                  <span>{project._count.members}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <CheckSquare className="w-4 h-4" />
-                  <span>{project._count.tasks} Tasks</span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      </header>
 
-      {/* Create Project Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div className="card w-full max-w-lg relative z-10 animate-in fade-in zoom-in duration-200">
-            <h2 className="text-2xl font-bold mb-6">Create New Project</h2>
-            <form onSubmit={handleCreate} className="space-y-4">
-              <div>
-                <label className="label">Project Name</label>
-                <input 
-                  type="text" 
-                  required
-                  className="input"
-                  placeholder="e.g. Website Redesign"
-                  value={newProject.name}
-                  onChange={(e) => setNewProject({...newProject, name: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="label">Description (Optional)</label>
-                <textarea 
-                  className="input min-h-[100px] py-2 resize-none"
-                  placeholder="Describe the project goals and scope..."
-                  value={newProject.description}
-                  onChange={(e) => setNewProject({...newProject, description: e.target.value})}
-                />
-              </div>
-              <div className="flex justify-end gap-3 mt-8">
-                <button 
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="btn btn-secondary"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit"
-                  disabled={creating}
-                  className="btn btn-primary min-w-[100px] flex items-center justify-center"
-                >
-                  {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create'}
-                </button>
-              </div>
-            </form>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <AnimatePresence>
+          {filteredProjects.map((project, idx) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+              className="group relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent rounded-3xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <Link to={`/projects/${project.id}`} className="card h-full flex flex-col hover:border-accent/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                <div className="flex items-start justify-between mb-8">
+                  <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center font-bold text-xl group-hover:bg-accent group-hover:text-white transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(79,142,247,0.3)]">
+                    {project.name.charAt(0)}
+                  </div>
+                  <div className="flex -space-x-2">
+                    {project.members.slice(0, 3).map((m, i) => (
+                      <img 
+                        key={i} 
+                        src={`https://i.pravatar.cc/100?u=${m.userId}`} 
+                        className="w-8 h-8 rounded-lg border-2 border-[#050505] object-cover" 
+                        alt="" 
+                      />
+                    ))}
+                    {project.members.length > 3 && (
+                      <div className="w-8 h-8 rounded-lg border-2 border-[#050505] bg-surface flex items-center justify-center text-[10px] font-bold text-muted">
+                        +{project.members.length - 3}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold font-heading mb-3 group-hover:text-accent transition-colors">{project.name}</h2>
+                  <p className="text-muted text-sm line-clamp-2 leading-relaxed">{project.description || 'No description provided for this project.'}</p>
+                </div>
+
+                <div className="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-[10px] font-bold text-muted/60 uppercase tracking-widest">
+                    <div className="flex items-center gap-1.5">
+                      <Layout className="w-3.5 h-3.5" />
+                      <span>{project._count?.tasks || 0} Tasks</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <UsersIcon className="w-3.5 h-3.5" />
+                      <span>{project.members.length} Members</span>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-muted group-hover:text-accent transition-all group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        {/* Empty State / Create Card */}
+        <button 
+          onClick={() => setShowCreateModal(true)}
+          className="card border-dashed border-white/10 bg-transparent flex flex-col items-center justify-center min-h-[300px] group hover:border-accent/50 hover:bg-accent/[0.02] transition-all duration-500"
+        >
+          <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 group-hover:bg-accent group-hover:text-white">
+            <Plus className="w-8 h-8" />
           </div>
-        </div>
-      )}
+          <p className="font-heading font-bold text-xl mb-1">Launch Project</p>
+          <p className="text-muted text-sm uppercase tracking-widest font-bold">New Workspace</p>
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {showCreateModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowCreateModal(false)} />
+            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="glass-card w-full max-w-xl relative z-10 p-10 border-white/20">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center shadow-lg shadow-accent/20">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-bold font-heading">New Project</h2>
+                </div>
+                <button onClick={() => setShowCreateModal(false)} className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all">
+                  <Plus className="w-5 h-5 text-muted rotate-45" />
+                </button>
+              </div>
+              <form onSubmit={handleCreate} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="label">Project Title</label>
+                  <input type="text" required autoFocus className="glass-input text-lg font-bold" placeholder="E.g., Quantum Redesign" value={newProject.name} onChange={e => setNewProject({...newProject, name: e.target.value})} />
+                </div>
+                <div className="space-y-2">
+                  <label className="label">Vision & Summary</label>
+                  <textarea className="glass-input min-h-[140px] py-4 resize-none text-sm leading-relaxed" placeholder="What's the main goal of this initiative?" value={newProject.description} onChange={e => setNewProject({...newProject, description: e.target.value})} />
+                </div>
+                <div className="flex justify-end gap-4 mt-10">
+                  <button type="button" onClick={() => setShowCreateModal(false)} className="btn btn-secondary h-12 px-8 font-bold">CANCEL</button>
+                  <button type="submit" disabled={loading} className="btn btn-primary h-12 px-10 font-bold tracking-widest uppercase text-xs">
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'LAUNCH PROJECT'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
