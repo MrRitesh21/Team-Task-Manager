@@ -7,10 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#0F1117",
-        surface: "#1A1D27",
+        background: "#050505",
+        surface: "#0F1117",
         accent: "#4F8EF7",
-        muted: "#94A3B8",
+        muted: "#8899A6",
       },
       fontFamily: {
         sans: ["DM Sans", "sans-serif"],
