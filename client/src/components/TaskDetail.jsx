@@ -67,6 +67,18 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this task?')) return;
+    try {
+      await api.delete(`tasks/${taskId}`);
+      toast.success('Task deleted');
+      onClose();
+      onUpdate();
+    } catch (error) {
+      toast.error('Delete failed');
+    }
+  };
+
   if (loading) {
     return (
       <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-surface/80 backdrop-blur-3xl z-50 flex items-center justify-center">
@@ -103,10 +115,13 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <button onClick={handleDelete} className="p-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 rounded-xl transition-all group" title="Delete Task">
+              <Trash2 className="w-5 h-5 text-rose-500 group-hover:text-white" />
+            </button>
             <button className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all">
               <MoreVertical className="w-5 h-5 text-muted" />
             </button>
-            <button onClick={onClose} className="p-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 rounded-xl transition-all">
+            <button onClick={onClose} className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all">
               <X className="w-5 h-5" />
             </button>
           </div>

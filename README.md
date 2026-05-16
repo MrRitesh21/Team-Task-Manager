@@ -1,53 +1,89 @@
-# Team Task Manager (TaskSync)
+# 🚀 Team Task Manager (TaskSync)
 
-A production-ready, full-stack Team Task Manager web application. Clean, fast, and functional — inspired by Linear and Jira.
+A premium, full-stack collaborative task management application built with **React**, **Node.js**, **Express**, and **PostgreSQL (Prisma)**. 
 
-## 🚀 Features
+## ✨ Key Features
 
-- **Auth**: JWT-based authentication with access and refresh tokens.
-- **Projects**: Create, update, and delete projects. Role-based access (ADMIN/MEMBER).
-- **Kanban Board**: Drag-and-drop tasks between columns (TODO, IN_PROGRESS, IN_REVIEW, DONE).
-- **Task Management**: Create tasks, assign members, set due dates, and track priority.
-- **Task Details**: Slide-over panel with markdown description and real-time comments.
-- **Dashboard**: Real-time stats, overdue task detection, and recent activity feed.
-- **Settings**: Manage project members and permissions.
-- **Profile**: Update personal info and change password.
+-   **User Authentication**: Secure Signup/Login with JWT and Refresh Tokens.
+-   **Project Management**: Create projects, manage team members, and assign roles (Admin/Member).
+-   **Task Management**: Create, assign, track (Kanban Drag-and-Drop), and delete tasks.
+-   **Rich Dashboard**: Real-time stats, workload distribution charts, and activity feeds.
+-   **Role-Based Access (RBAC)**: Fine-grained permissions for project settings and task modifications.
+-   **Premium UI**: Sleek dark-mode aesthetic with glassmorphism and smooth Framer Motion animations.
 
-## 🏗️ Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: React + Vite + TailwindCSS + dnd-kit + Framer Motion
-- **Backend**: Node.js + Express.js
-- **Database**: PostgreSQL + Prisma ORM
-- **Auth**: JWT + bcryptjs + cookie-parser
-- **Deployment**: Railway
+-   **Frontend**: React, Vite, TailwindCSS, Framer Motion, Lucide Icons, DnD Kit.
+-   **Backend**: Node.js, Express, Prisma ORM.
+-   **Database**: PostgreSQL (Railway).
+-   **Authentication**: JWT (Access + Refresh Tokens) & HttpOnly Cookies.
+-   **Deployment**: Vercel (Frontend) & Railway (Backend).
 
-## 🛠️ Local Setup
+## 📦 Setup & Installation
 
-### Server
-1. `cd server`
-2. `npm install`
-3. Create `.env` from `.env.example` and add your `DATABASE_URL`.
-4. `npx prisma migrate dev`
-5. `npm run seed` (Admin: admin@demo.com / Admin@123)
-6. `npm run dev`
+### Prerequisites
+-   Node.js (v18+)
+-   PostgreSQL instance (or Railway account)
 
-### Client
-1. `cd client`
-2. `npm install`
-3. `npm run dev`
+### 1. Clone the repository
+```bash
+git clone https://github.com/MrRitesh21/Team-Task-Manager.git
+cd Team-Task-Manager
+```
 
-## 📦 Deployment (Railway)
+### 2. Backend Setup
+```bash
+cd server
+npm install
+```
+Create a `.env` file in the `server` directory:
+```env
+DATABASE_URL=your_postgresql_url
+JWT_SECRET=your_secret
+JWT_REFRESH_SECRET=your_refresh_secret
+PORT=8080
+CLIENT_URL=http://localhost:5173
+```
+Sync the database:
+```bash
+npx prisma db push
+```
 
-1. Connect your GitHub repo to Railway.
-2. Add a PostgreSQL database plugin.
-3. Configure environment variables in Railway:
-   - `DATABASE_URL` (automatically provided by Postgres plugin)
-   - `JWT_SECRET`
-   - `JWT_REFRESH_SECRET`
-   - `CLIENT_URL`
-   - `NODE_ENV=production`
-4. Railway will use the `railway.toml` at the root to deploy both services.
+### 3. Frontend Setup
+```bash
+cd ../client
+npm install
+```
+Create a `.env` file in the `client` directory:
+```env
+VITE_API_URL=http://localhost:8080/api/
+```
+
+### 4. Run Locally
+```bash
+# In /server
+npm run dev
+
+# In /client
+npm run dev
+```
+
+## 🌍 Deployment
+
+### Railway (Backend)
+1.  Connect your repo to Railway.
+2.  Add a PostgreSQL plugin.
+3.  Set the Environment Variables listed above.
+4.  Railway will automatically use the `railway.toml` for deployment.
+
+### Vercel (Frontend)
+1.  Connect your repo to Vercel.
+2.  Set `VITE_API_URL` to your Railway backend URL (including `/api/`).
+3.  Deploy!
 
 ## ✅ Demo Account
-- **Email**: `admin@demo.com`
-- **Password**: `Admin@123`
+-   **Email**: `admin@demo.com`
+-   **Password**: `Admin@123`
+
+---
+Developed for the Full-Stack Coding Assignment.

@@ -39,6 +39,7 @@ import { toast } from 'react-hot-toast';
 import { clsx } from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import TaskDetail from '../components/TaskDetail';
+import { useAuth } from '../context/AuthContext';
 
 const COLUMNS = [
   { id: 'TODO', title: 'To Do', color: 'bg-slate-500' },
@@ -136,6 +137,7 @@ const TaskCard = ({ task, onClick }) => {
 };
 
 const ProjectBoard = () => {
+  const { user } = useAuth();
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -296,9 +298,11 @@ const ProjectBoard = () => {
           <button className="btn btn-secondary h-12 px-5">
             <Filter className="w-4 h-4" /> <span>Filters</span>
           </button>
-          <Link to={`/projects/${id}/settings`} className="btn btn-secondary h-12 w-12 !px-0">
-            <Settings className="w-5 h-5" />
-          </Link>
+          {project?.members?.find(m => m.userId === user?.id)?.role === 'ADMIN' && (
+            <Link to={`/projects/${id}/settings`} className="btn btn-secondary h-12 w-12 !px-0">
+              <Settings className="w-5 h-5" />
+            </Link>
+          )}
         </div>
       </div>
 

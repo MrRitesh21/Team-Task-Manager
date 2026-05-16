@@ -64,12 +64,32 @@ const getDashboardStats = async (req, res) => {
       take: 10
     });
 
+    // Tasks per user (top 5)
+    const tasksPerUser = await prisma.user.findMany({
+      where: {
+        memberships: {
+          some: { projectId: { in: projectIds } }
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+        _count: {
+          select: { assignedTasks: { where: { projectId: { in: projectIds } } } }
+        }
+      },
+      orderBy: { assignedTasks: { _count: 'desc' } },
+      take: 5
+    });
+
     res.json({
       totalTasks,
       byStatus,
       overdueTasks,
       myTasks,
-      recentActivity
+      recentActivity,
+      tasksPerUser
     });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error.' });

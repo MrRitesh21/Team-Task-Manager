@@ -168,9 +168,46 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Activity Feed */}
+        {/* Tasks per User Breakdown */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold font-heading">Activity</h2>
+          <h2 className="text-2xl font-bold font-heading">Team Workload</h2>
+          <div className="card bg-[#0A0A0A] border-white/5 p-8">
+            <div className="space-y-6">
+              {stats?.tasksPerUser?.map((member) => {
+                const percentage = stats.totalTasks > 0 
+                  ? Math.round((member._count.assignedTasks / stats.totalTasks) * 100) 
+                  : 0;
+                
+                return (
+                  <div key={member.id} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <img 
+                          src={member.avatar || `https://ui-avatars.com/api/?name=${member.name}&background=4F8EF7&color=fff`} 
+                          className="w-6 h-6 rounded-lg object-cover" 
+                          alt="" 
+                        />
+                        <span className="text-sm font-bold">{member.name}</span>
+                      </div>
+                      <span className="text-xs font-bold text-muted">{member._count.assignedTasks} tasks</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${percentage}%` }}
+                        className="h-full bg-accent shadow-[0_0_10px_rgba(79,142,247,0.5)]"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+              {(!stats?.tasksPerUser || stats.tasksPerUser.length === 0) && (
+                <p className="text-center text-muted py-4 italic text-sm">No assignments yet.</p>
+              )}
+            </div>
+          </div>
+
+          <h2 className="text-2xl font-bold font-heading mt-10">Activity</h2>
           <div className="card bg-[#0A0A0A] border-white/5 p-8 space-y-8">
             {stats?.recentActivity.length === 0 ? (
               <p className="text-center text-muted py-8 italic">Silence is golden...</p>
