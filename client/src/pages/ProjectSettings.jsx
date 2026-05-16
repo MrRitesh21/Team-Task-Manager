@@ -44,7 +44,7 @@ const ProjectSettings = () => {
     setUpdating(true);
     try {
       await api.patch(`projects/${id}`, {
-        name: project.name,
+        name: project?.name,
         description: project.description
       });
       toast.success('Project updated');
@@ -98,7 +98,7 @@ const ProjectSettings = () => {
   };
 
   const handleDeleteProject = async () => {
-    if (deleteConfirm !== project.name) {
+    if (deleteConfirm !== project?.name) {
       toast.error('Please type the project name correctly to confirm');
       return;
     }
@@ -129,7 +129,7 @@ const ProjectSettings = () => {
             <input 
               type="text" 
               className="input"
-              value={project.name}
+              value={project?.name}
               onChange={e => setProject({...project, name: e.target.value})}
             />
           </div>
@@ -180,12 +180,12 @@ const ProjectSettings = () => {
               <div key={member.userId} className="py-4 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <img 
-                    src={member.user.avatar || `https://ui-avatars.com/api/?name=${member.user.name}&background=4F8EF7&color=fff`} 
+                    src={member.user?.avatar || `https://ui-avatars.com/api/?name=${member.user?.name}&background=4F8EF7&color=fff`} 
                     alt="" 
                     className="w-10 h-10 rounded-full"
                   />
                   <div>
-                    <p className="font-medium">{member.user.name}</p>
+                    <p className="font-medium">{member.user?.name}</p>
                     <p className="text-xs text-muted">{member.user.email}</p>
                   </div>
                 </div>
@@ -228,7 +228,7 @@ const ProjectSettings = () => {
           </div>
 
           <div className="space-y-4">
-            <p className="text-sm">To confirm, type <span className="font-mono font-bold text-white">"{project.name}"</span> in the box below:</p>
+            <p className="text-sm">To confirm, type <span className="font-mono font-bold text-white">"{project?.name}"</span> in the box below:</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <input 
                 type="text" 

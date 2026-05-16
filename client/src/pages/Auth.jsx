@@ -26,7 +26,7 @@ const Auth = () => {
         await login(formData.email, formData.password);
         toast.success('Welcome back!');
       } else {
-        await register(formData.name, formData.email, formData.password);
+        await register(formData?.name, formData.email, formData.password);
         toast.success('Account created successfully!');
       }
       navigate('/dashboard');
@@ -40,7 +40,7 @@ const Auth = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target?.name]: e.target.value });
   };
 
   return (
@@ -118,7 +118,7 @@ const Auth = () => {
                         required={!isLogin}
                         className="glass-input pl-11"
                         placeholder="John Doe"
-                        value={formData.name}
+                        value={formData?.name}
                         onChange={handleChange}
                       />
                     </div>

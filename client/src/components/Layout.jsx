@@ -77,7 +77,7 @@ const Layout = () => {
             <p className="px-4 text-[10px] font-bold text-muted/50 uppercase tracking-[0.2em] mb-4">Navigation</p>
             {navigation?.map((item) => (
               <Link
-                key={item.name}
+                key={item?.name}
                 to={item.href}
                 className={cn(
                   "flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group",
@@ -91,7 +91,7 @@ const Layout = () => {
                     "w-5 h-5 transition-colors",
                     location.pathname === item.href ? "text-accent" : "text-muted group-hover:text-white"
                   )} />
-                  <span className="font-medium text-sm">{item.name}</span>
+                  <span className="font-medium text-sm">{item?.name}</span>
                 </div>
                 {location.pathname === item.href && (
                   <motion.div layoutId="active-nav" className="w-1.5 h-1.5 rounded-full bg-accent" />
@@ -105,15 +105,15 @@ const Layout = () => {
               <div className="flex items-center gap-3 mb-4">
                 <div className="relative">
                   <img 
-                    src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&background=4F8EF7&color=fff`} 
-                    alt={user?.name}
+                    src={user??.avatar || `https://ui-avatars.com/api/?name=${user??.name}&background=4F8EF7&color=fff`} 
+                    alt={user??.name}
                     className="w-10 h-10 rounded-xl object-cover"
                   />
                   <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-surface rounded-full"></div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate">{user?.name}</p>
-                  <p className="text-[10px] text-muted truncate uppercase tracking-wider">{user?.email.split('@')[0]}</p>
+                  <p className="text-sm font-bold truncate">{user??.name}</p>
+                  <p className="text-[10px] text-muted truncate uppercase tracking-wider">{user??.email?.split('@')[0]}</p>
                 </div>
               </div>
               <button

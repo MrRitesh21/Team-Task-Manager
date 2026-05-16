@@ -94,10 +94,10 @@ const TaskCard = ({ task, onClick }) => {
           <div className="flex -space-x-2">
             {task.assignee ? (
               <img 
-                src={task.assignee.avatar || `https://ui-avatars.com/api/?name=${task.assignee.name}&background=4F8EF7&color=fff`} 
-                alt={task.assignee.name}
+                src={task.assignee?.avatar || `https://ui-avatars.com/api/?name=${task.assignee?.name}&background=4F8EF7&color=fff`} 
+                alt={task.assignee?.name}
                 className="w-7 h-7 rounded-lg border-2 border-[#0A0A0A] object-cover"
-                title={task.assignee.name}
+                title={task.assignee?.name}
               />
             ) : (
               <div className="w-7 h-7 rounded-lg border-2 border-[#0A0A0A] bg-white/5 flex items-center justify-center text-[8px] text-muted font-bold">UN</div>
@@ -269,11 +269,11 @@ const ProjectBoard = () => {
               <Layout className="w-7 h-7 text-accent" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold font-heading mb-1">{project?.name}</h1>
+              <h1 className="text-3xl font-bold font-heading mb-1">{project??.name}</h1>
               <div className="flex items-center gap-6 text-xs text-muted/60 font-bold uppercase tracking-widest">
                 <div className="flex items-center gap-2">
                   <UsersIcon className="w-3.5 h-3.5" />
-                  <span>{project??.members?.length} Members</span>
+                  <span>{project?.members?.length} Members</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Plus className="w-3.5 h-3.5" />
@@ -414,7 +414,7 @@ const CreateTaskModal = ({ projectId, status, members, onClose, onCreated }) => 
             <label className="label">Responsible Member</label>
             <select className="glass-input text-sm" value={formData.assigneeId} onChange={e => setFormData({...formData, assigneeId: e.target.value})}>
               <option value="">Unassigned</option>
-              {members?.map(m => ( <option key={m.userId} value={m.userId}>{m.user.name}</option> ))}
+              {members?.map(m => ( <option key={m.userId} value={m.userId}>{m.user?.name}</option> ))}
             </select>
           </div>
           <div className="space-y-2">

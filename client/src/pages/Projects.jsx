@@ -58,7 +58,7 @@ const Projects = () => {
     }
   };
 
-  const filteredProjects = projects.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredProjects = projects.filter(p => p?.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   if (loading && projects.length === 0) {
     return (
@@ -116,13 +116,13 @@ const Projects = () => {
               <Link to={`/projects/${project.id}`} className="card h-full flex flex-col hover:border-accent/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
                 <div className="flex items-start justify-between mb-8">
                   <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center font-bold text-xl group-hover:bg-accent group-hover:text-white transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(79,142,247,0.3)]">
-                    {project.name.charAt(0)}
+                    {project?.name.charAt(0)}
                   </div>
                   <div className="flex -space-x-2">
                     {project.members?.slice(0, 3)?.map((m, i) => (
                       <img 
                         key={i} 
-                        src={m.user?.avatar || `https://i.pravatar.cc/100?u=${m.userId}`} 
+                        src={m.user??.avatar || `https://i.pravatar.cc/100?u=${m.userId}`} 
                         className="w-8 h-8 rounded-lg border-2 border-[#050505] object-cover" 
                         alt="" 
                       />
@@ -136,7 +136,7 @@ const Projects = () => {
                 </div>
 
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold font-heading mb-3 group-hover:text-accent transition-colors">{project.name}</h2>
+                  <h2 className="text-2xl font-bold font-heading mb-3 group-hover:text-accent transition-colors">{project?.name}</h2>
                   <p className="text-muted text-sm line-clamp-2 leading-relaxed">{project.description || 'No description provided for this project.'}</p>
                 </div>
 
@@ -190,7 +190,7 @@ const Projects = () => {
               <form onSubmit={handleCreate} className="space-y-6">
                 <div className="space-y-2">
                   <label className="label">Project Title</label>
-                  <input type="text" required autoFocus className="glass-input text-lg font-bold" placeholder="E.g., Quantum Redesign" value={newProject.name} onChange={e => setNewProject({...newProject, name: e.target.value})} />
+                  <input type="text" required autoFocus className="glass-input text-lg font-bold" placeholder="E.g., Quantum Redesign" value={newProject?.name} onChange={e => setNewProject({...newProject, name: e.target.value})} />
                 </div>
                 <div className="space-y-2">
                   <label className="label">Vision & Summary</label>

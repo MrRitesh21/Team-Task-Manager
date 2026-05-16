@@ -134,12 +134,12 @@ const Dashboard = () => {
                   <div className="p-4 flex items-center justify-between gap-6">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
-                        <span className="text-accent font-bold text-xs">{task.project.name.charAt(0)}</span>
+                        <span className="text-accent font-bold text-xs">{task.project?.name.charAt(0)}</span>
                       </div>
                       <div className="min-w-0">
                         <h3 className="font-bold text-white group-hover:text-accent transition-colors truncate">{task.title}</h3>
                         <p className="text-xs text-muted flex items-center gap-1.5 mt-0.5">
-                          <Layers className="w-3 h-3" /> {task.project.name}
+                          <Layers className="w-3 h-3" /> {task.project?.name}
                         </p>
                       </div>
                     </div>
@@ -183,11 +183,11 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <img 
-                          src={member.avatar || `https://ui-avatars.com/api/?name=${member.name}&background=4F8EF7&color=fff`} 
+                          src={member?.avatar || `https://ui-avatars.com/api/?name=${member?.name}&background=4F8EF7&color=fff`} 
                           className="w-6 h-6 rounded-lg object-cover" 
                           alt="" 
                         />
-                        <span className="text-sm font-bold">{member.name}</span>
+                        <span className="text-sm font-bold">{member?.name}</span>
                       </div>
                       <span className="text-xs font-bold text-muted">{member._count.assignedTasks} tasks</span>
                     </div>
@@ -219,7 +219,7 @@ const Dashboard = () => {
                   )}
                   <div className="relative shrink-0">
                     <img 
-                      src={activity.assignee?.avatar || `https://ui-avatars.com/api/?name=${activity.assignee?.name || 'U'}&background=4F8EF7&color=fff`} 
+                      src={activity.assignee??.avatar || `https://ui-avatars.com/api/?name=${activity.assignee??.name || 'U'}&background=4F8EF7&color=fff`} 
                       alt="" 
                       className="w-10 h-10 rounded-xl object-cover ring-2 ring-white/5 shadow-2xl"
                     />
@@ -229,7 +229,7 @@ const Dashboard = () => {
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
                     <p className="text-sm text-gray-300 leading-tight">
-                      <span className="font-bold text-white">{activity.assignee?.name || 'Someone'}</span>
+                      <span className="font-bold text-white">{activity.assignee??.name || 'Someone'}</span>
                       <span className="text-muted mx-1.5">modified</span>
                       <span className="text-accent font-medium hover:underline cursor-pointer">"{activity.title}"</span>
                     </p>
@@ -239,7 +239,7 @@ const Dashboard = () => {
                       </span>
                       <span className="w-1 h-1 rounded-full bg-white/10" />
                       <span className="text-[10px] font-bold text-accent/70 uppercase tracking-wider truncate">
-                        {activity.project.name}
+                        {activity.project?.name}
                       </span>
                     </div>
                   </div>

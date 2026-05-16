@@ -150,12 +150,12 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
                 <p className="label">Assigned To</p>
                 <div className="flex items-center gap-3 group cursor-pointer p-2 -m-2 rounded-xl hover:bg-white/5 transition-colors">
                   <img 
-                    src={task.assignee?.avatar || `https://ui-avatars.com/api/?name=${task.assignee?.name || 'U'}&background=4F8EF7&color=fff`} 
+                    src={task.assignee??.avatar || `https://ui-avatars.com/api/?name=${task.assignee??.name || 'U'}&background=4F8EF7&color=fff`} 
                     className="w-10 h-10 rounded-xl ring-2 ring-white/5"
                     alt=""
                   />
                   <div>
-                    <p className="text-sm font-bold">{task.assignee?.name || 'Unassigned'}</p>
+                    <p className="text-sm font-bold">{task.assignee??.name || 'Unassigned'}</p>
                     <p className="text-[10px] text-muted uppercase tracking-wider font-medium">{task.assignee ? 'Responsible' : 'Awaiting Assignment'}</p>
                   </div>
                 </div>
@@ -201,14 +201,14 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
                 {task.comments?.map((comment) => (
                   <div key={comment.id} className="flex gap-4 group">
                     <img 
-                      src={comment.author.avatar || `https://ui-avatars.com/api/?name=${comment.author.name}&background=4F8EF7&color=fff`} 
+                      src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}&background=4F8EF7&color=fff`} 
                       className="w-10 h-10 rounded-xl ring-2 ring-white/5"
                       alt=""
                     />
                     <div className="flex-1 min-w-0">
                       <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-5 group-hover:bg-white/[0.05] transition-all">
                         <div className="flex items-center justify-between mb-3">
-                          <p className="text-sm font-bold">{comment.author.name}</p>
+                          <p className="text-sm font-bold">{comment.author?.name}</p>
                           <p className="text-[10px] text-muted font-bold uppercase tracking-wider">{format(new Date(comment.createdAt), 'MMM d, h:mm a')}</p>
                         </div>
                         <p className="text-sm text-gray-300 leading-relaxed">{comment.content}</p>
