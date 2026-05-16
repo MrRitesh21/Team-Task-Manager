@@ -1,0 +1,12 @@
+[build]
+builder = "nixpacks"
+
+[[services]]
+name = "server"
+source = "server"
+startCommand = "node server.js"
+
+[[services]]
+name = "client"
+source = "client"
+startCommand = "npm run preview"
