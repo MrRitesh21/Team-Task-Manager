@@ -4,8 +4,8 @@ builder = "nixpacks"
 [[services]]
 name = "server"
 source = "server"
-buildCommand = "npm install && npx prisma generate"
-startCommand = "npx prisma db push && node server.js"
+buildCommand = "npm install && npx prisma generate && npx prisma db push --accept-data-loss"
+startCommand = "node server.js"
 
 [services.server.env]
 PORT = "8080"
