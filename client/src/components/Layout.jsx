@@ -43,7 +43,6 @@ const Layout = () => {
   return (
     <div className="min-h-screen bg-[#050505] flex text-white selection:bg-accent/30">
       {/* Background Glows */}
-      <div className="fixed top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none z-0" />
       <div className="fixed -top-[20%] -left-[10%] w-[50%] h-[50%] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Mobile Sidebar Overlay */}
