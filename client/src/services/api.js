@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://team-task-manage.up.railway.app/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://team-task-manage.up.railway.app/api/',
   withCredentials: true,
 });
 
@@ -21,7 +21,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const { data } = await axios.post(
-          `${import.meta.env.VITE_API_URL || 'https://team-task-manage.up.railway.app/api'}/auth/refresh`,
+          `${import.meta.env.VITE_API_URL || 'https://team-task-manage.up.railway.app/api/'}auth/refresh`,
           {},
           { withCredentials: true }
         );
