@@ -284,7 +284,30 @@ const ProjectBoard = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-6">
+            <div className="flex -space-x-3 hover:space-x-1 transition-all duration-500 group pr-2">
+              {project?.members?.slice(0, 5).map((member) => (
+                <div key={member.userId} className="relative group/member">
+                  <img 
+                    src={member.user?.avatar || `https://ui-avatars.com/api/?name=${member.user?.name}&background=4F8EF7&color=fff`} 
+                    className="w-10 h-10 rounded-xl border-2 border-[#050505] object-cover ring-2 ring-transparent group-hover/member:ring-accent transition-all"
+                    alt={member.user?.name}
+                  />
+                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded text-[10px] font-bold border border-white/10 opacity-0 group-hover/member:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-2xl">
+                    {member.user?.name} ({member.role})
+                  </div>
+                </div>
+              ))}
+              {project?.members?.length > 5 && (
+                <div className="w-10 h-10 rounded-xl bg-white/5 border-2 border-[#050505] flex items-center justify-center text-[10px] font-bold text-muted">
+                  +{project.members.length - 5}
+                </div>
+              )}
+            </div>
+
+            <div className="h-10 w-px bg-white/5 hidden sm:block" />
+
+            <div className="flex flex-wrap items-center gap-4">
           <div className="relative group flex-1 min-w-[200px] sm:max-w-[300px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-focus-within:text-accent transition-colors" />
             <input 

@@ -212,6 +212,27 @@ const removeMember = async (req, res) => {
   }
 };
 
+const updateMemberRole = async (req, res) => {
+  const { id: projectId, userId } = req.params;
+  const { role } = req.body;
+
+  try {
+    const member = await prisma.projectMember.update({
+      where: {
+        userId_projectId: {
+          userId,
+          projectId
+        }
+      },
+      data: { role }
+    });
+
+    res.json(member);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
 const joinProjectByCode = async (req, res) => {
   const { inviteCode } = req.body;
   const userId = req.user.id;
