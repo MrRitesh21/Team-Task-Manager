@@ -38,7 +38,8 @@ const register = async (req, res) => {
 
     res.status(201).json({ user, accessToken });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error.' });
+    console.error('Registration error:', error);
+    res.status(500).json({ error: error.message || 'Internal server error.' });
   }
 };
 
