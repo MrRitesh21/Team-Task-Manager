@@ -131,7 +131,7 @@ const ProjectSettings = () => {
             <label className="label">Project Name</label>
             <input 
               type="text" 
-              className="input"
+              className="glass-input"
               value={project?.name}
               onChange={e => setProject({...project, name: e.target.value})}
             />
@@ -139,9 +139,10 @@ const ProjectSettings = () => {
           <div>
             <label className="label">Description</label>
             <textarea 
-              className="input min-h-[100px] py-2"
+              className="glass-input min-h-[120px] py-3 resize-none"
               value={project.description || ''}
               onChange={e => setProject({...project, description: e.target.value})}
+              placeholder="Tell us about this project..."
             />
           </div>
           <div className="flex justify-end">
@@ -175,9 +176,9 @@ const ProjectSettings = () => {
 
       {/* Team Members */}
       <section className="space-y-6">
-        <div className="flex items-center justify-between border-b border-gray-800 pb-2">
+        <div className="flex items-center justify-between border-b border-white/5 pb-2">
           <h2 className="text-xl font-bold">Team Members</h2>
-          <span className="text-xs font-medium text-muted uppercase tracking-wider">{project?.members?.length} Total</span>
+          <span className="text-[10px] font-bold text-muted/50 uppercase tracking-widest">{project?.members?.length} Total</span>
         </div>
 
         <div className="card space-y-6">
@@ -187,7 +188,7 @@ const ProjectSettings = () => {
               <input 
                 type="email" 
                 placeholder="Collaborator email address..." 
-                className="input pl-10 h-12"
+                className="glass-input pl-11 h-12"
                 value={inviteEmail}
                 onChange={e => setInviteEmail(e.target.value)}
                 required
@@ -195,7 +196,7 @@ const ProjectSettings = () => {
             </div>
             <div className="flex gap-2">
               <select 
-                className="input w-32 h-12 px-3 text-xs font-bold uppercase tracking-widest bg-white/5"
+                className="glass-input w-32 h-12 px-3 text-xs font-bold uppercase tracking-widest"
                 value={inviteRole}
                 onChange={e => setInviteRole(e.target.value)}
               >
@@ -266,7 +267,7 @@ const ProjectSettings = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <input 
                 type="text" 
-                className="input flex-1"
+                className="glass-input border-red-500/20 focus:border-red-500/50 flex-1 h-12"
                 placeholder="Type project name..."
                 value={deleteConfirm}
                 onChange={e => setDeleteConfirm(e.target.value)}
