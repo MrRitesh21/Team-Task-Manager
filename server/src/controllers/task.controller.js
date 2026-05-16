@@ -1,4 +1,5 @@
 const prisma = require('../services/prisma.service');
+const { logActivity } = require('../utils/activity');
 
 const getTasks = async (req, res) => {
   const { id: projectId } = req.params;
@@ -67,6 +68,13 @@ const createTask = async (req, res) => {
           }
         }
       }
+    });
+
+    await logActivity({
+      type: 'TASK_CREATED',
+      content: `created task: ${title}`,
+      userId: creatorId,
+      projectId
     });
 
     res.status(201).json(task);

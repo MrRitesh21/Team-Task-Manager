@@ -8,7 +8,8 @@ const {
   addMember,
   removeMember,
   updateMemberRole,
-  joinProjectByCode
+  joinProjectByCode,
+  leaveProject
 } = require('../controllers/project.controller');
 const { authenticate, requireProjectRole } = require('../middleware/auth.middleware');
 
@@ -22,6 +23,7 @@ router.get('/:id', getProjectById);
 router.patch('/:id', requireProjectRole('ADMIN'), updateProject);
 router.delete('/:id', requireProjectRole('ADMIN'), deleteProject);
 router.post('/join', joinProjectByCode);
+router.delete('/:id/leave', leaveProject);
 
 router.post('/:id/members', requireProjectRole('ADMIN'), addMember);
 router.delete('/:id/members/:userId', requireProjectRole('ADMIN'), removeMember);

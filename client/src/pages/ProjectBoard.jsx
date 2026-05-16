@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { 
   Settings, 
   Plus, 
+  LogOut,
   Search, 
   Filter, 
   MoreHorizontal,
@@ -139,6 +140,18 @@ const TaskCard = ({ task, onClick }) => {
 const ProjectBoard = () => {
   const { user } = useAuth();
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const handleLeaveProject = async () => {
+    if (!window.confirm('Are you sure you want to leave this project?')) return;
+    try {
+      await api.delete(`projects/${id}/leave`);
+      toast.success('You have left the project');
+      navigate('/projects');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to leave project');
+    }
+  };
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -321,10 +334,18 @@ const ProjectBoard = () => {
           <button className="btn btn-secondary h-12 px-5">
             <Filter className="w-4 h-4" /> <span>Filters</span>
           </button>
-          {project?.members?.find(m => m.userId === user?.id)?.role === 'ADMIN' && (
+          {project?.members?.find(m => m.userId === user?.id)?.role === 'ADMIN' ? (
             <Link to={`/projects/${id}/settings`} className="btn btn-secondary h-12 w-12 !px-0">
               <Settings className="w-5 h-5" />
             </Link>
+          ) : (
+            <button 
+              onClick={handleLeaveProject}
+              className="btn btn-secondary h-12 px-5 flex items-center gap-2 text-rose-500 hover:bg-rose-500/10 border-rose-500/20"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Leave</span>
+            </button>
           )}
           </div>
         </div>

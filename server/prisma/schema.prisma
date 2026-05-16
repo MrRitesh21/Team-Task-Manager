@@ -18,6 +18,7 @@ model User {
   assignedTasks Task[]       @relation("AssignedTo")
   createdTasks  Task[]       @relation("CreatedBy")
   comments     Comment[]
+  activities   Activity[]
 }
 
 model Project {
@@ -29,6 +30,7 @@ model Project {
   updatedAt   DateTime        @updatedAt
   members     ProjectMember[]
   tasks       Task[]
+  activities  Activity[]
 }
 
 model ProjectMember {
@@ -96,4 +98,13 @@ enum Priority {
   HIGH
   URGENT
 }
-
+model Activity {
+  id        String   @id @default(uuid())
+  type      String   // TASK_CREATED, TASK_UPDATED, MEMBER_ADDED, etc.
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}

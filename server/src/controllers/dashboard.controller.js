@@ -53,14 +53,14 @@ const getDashboardStats = async (req, res) => {
       take: 5
     });
 
-    // Recent activity (simple implementation: recently updated tasks)
-    const recentActivity = await prisma.task.findMany({
+    // Recent activity using the new Activity model
+    const recentActivity = await prisma.activity.findMany({
       where: { projectId: { in: projectIds } },
-      orderBy: { updatedAt: 'desc' },
       include: {
-        project: { select: { name: true } },
-        assignee: { select: { name: true, avatar: true } }
+        user: { select: { name: true, avatar: true } },
+        project: { select: { name: true } }
       },
+      orderBy: { createdAt: 'desc' },
       take: 10
     });
 

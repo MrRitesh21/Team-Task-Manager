@@ -156,9 +156,12 @@ const deleteProject = async (req, res) => {
   }
 };
 
+const { logActivity } = require('../utils/activity');
+
 const addMember = async (req, res) => {
   const { id: projectId } = req.params;
   const { email, role } = req.body;
+  const adminId = req.user.id;
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
@@ -195,6 +198,13 @@ const addMember = async (req, res) => {
           }
         }
       }
+    });
+
+    await logActivity({
+      type: 'MEMBER_ADDED',
+      content: `added ${user.name} as ${role || 'MEMBER'}`,
+      userId: adminId,
+      projectId
     });
 
     res.status(201).json(member);
@@ -238,6 +248,37 @@ const updateMemberRole = async (req, res) => {
     });
 
     res.json(member);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
+const leaveProject = async (req, res) => {
+  const { id: projectId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const admins = await prisma.projectMember.findMany({
+      where: { projectId, role: 'ADMIN' }
+    });
+
+    const userMembership = await prisma.projectMember.findUnique({
+      where: { userId_projectId: { userId, projectId } }
+    });
+
+    if (!userMembership) {
+      return res.status(404).json({ error: 'You are not a member of this project.' });
+    }
+
+    if (userMembership.role === 'ADMIN' && admins.length === 1) {
+      return res.status(400).json({ error: 'You are the only admin. Assign another admin before leaving.' });
+    }
+
+    await prisma.projectMember.delete({
+      where: { userId_projectId: { userId, projectId } }
+    });
+
+    res.json({ message: 'Successfully left the project.' });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error.' });
   }
@@ -292,5 +333,6 @@ module.exports = {
   addMember,
   removeMember,
   updateMemberRole,
-  joinProjectByCode
+  joinProjectByCode,
+  leaveProject
 };

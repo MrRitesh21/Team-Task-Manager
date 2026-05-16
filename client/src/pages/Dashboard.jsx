@@ -207,10 +207,10 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <h2 className="text-2xl font-bold font-heading mt-10">Activity</h2>
+          <h2 className="text-2xl font-bold font-heading mt-10">Recent Team Activity</h2>
           <div className="card bg-[#0A0A0A] border-white/5 p-8 space-y-8">
-            {stats?.recentActivity.length === 0 ? (
-              <p className="text-center text-muted py-8 italic">Silence is golden...</p>
+            {stats?.recentActivity?.length === 0 ? (
+              <p className="text-center text-muted py-8 italic">No activity recorded yet.</p>
             ) : (
               stats?.recentActivity?.map((activity, idx) => (
                 <div key={activity.id} className="flex gap-5 relative">
@@ -219,23 +219,19 @@ const Dashboard = () => {
                   )}
                   <div className="relative shrink-0">
                     <img 
-                      src={activity.assignee?.avatar || `https://ui-avatars.com/api/?name=${activity.assignee?.name || 'U'}&background=4F8EF7&color=fff`} 
+                      src={activity.user?.avatar || `https://ui-avatars.com/api/?name=${activity.user?.name || 'U'}&background=4F8EF7&color=fff`} 
                       alt="" 
                       className="w-10 h-10 rounded-xl object-cover ring-2 ring-white/5 shadow-2xl"
                     />
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#0A0A0A] rounded-full flex items-center justify-center">
-                      <div className="w-2.5 h-2.5 bg-accent rounded-full" />
-                    </div>
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
                     <p className="text-sm text-gray-300 leading-tight">
-                      <span className="font-bold text-white">{activity.assignee?.name || 'Someone'}</span>
-                      <span className="text-muted mx-1.5">modified</span>
-                      <span className="text-accent font-medium hover:underline cursor-pointer">"{activity.title}"</span>
+                      <span className="font-bold text-white">{activity.user?.name}</span>
+                      <span className="text-muted mx-1.5">{activity.content}</span>
                     </p>
                     <div className="flex items-center gap-3 mt-2">
                       <span className="text-[10px] font-bold text-muted/50 uppercase tracking-wider">
-                        {format(new Date(activity.updatedAt), 'h:mm a')}
+                        {format(new Date(activity.createdAt), 'MMM d, h:mm a')}
                       </span>
                       <span className="w-1 h-1 rounded-full bg-white/10" />
                       <span className="text-[10px] font-bold text-accent/70 uppercase tracking-wider truncate">
