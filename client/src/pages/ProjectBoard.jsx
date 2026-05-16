@@ -15,7 +15,8 @@ import {
   MessageSquare,
   Layout,
   Users as UsersIcon,
-  ChevronLeft
+  ChevronLeft,
+  UserPlus
 } from 'lucide-react';
 import { 
   DndContext, 
@@ -160,6 +161,7 @@ const ProjectBoard = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newTaskColumn, setNewTaskColumn] = useState('TODO');
   const [searchQuery, setSearchQuery] = useState('');
+  const isAdmin = useMemo(() => project?.members?.find(m => m.userId === user?.id)?.role === 'ADMIN', [project, user]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -297,8 +299,12 @@ const ProjectBoard = () => {
           </div>
         </div>
 
-          <div className="flex items-center gap-6">
-            <div className="flex -space-x-3 hover:space-x-1 transition-all duration-500 group pr-2">
+        <div className="flex flex-wrap items-center gap-6">
+          <div className="flex items-center gap-3">
+            <div 
+              className="flex -space-x-3 hover:space-x-1 transition-all duration-500 group pr-2 cursor-pointer" 
+              onClick={() => isAdmin && navigate(`/projects/${id}/settings`)}
+            >
               {project?.members?.slice(0, 5).map((member) => (
                 <div key={member.userId} className="relative group/member">
                   <img 
@@ -306,9 +312,6 @@ const ProjectBoard = () => {
                     className="w-10 h-10 rounded-xl border-2 border-[#050505] object-cover ring-2 ring-transparent group-hover/member:ring-accent transition-all"
                     alt={member.user?.name}
                   />
-                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded text-[10px] font-bold border border-white/10 opacity-0 group-hover/member:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-2xl">
-                    {member.user?.name} ({member.role})
-                  </div>
                 </div>
               ))}
               {project?.members?.length > 5 && (
@@ -318,35 +321,45 @@ const ProjectBoard = () => {
               )}
             </div>
 
-            <div className="h-10 w-px bg-white/5 hidden sm:block" />
-
-            <div className="flex flex-wrap items-center gap-4">
-          <div className="relative group flex-1 min-w-[200px] sm:max-w-[300px]">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-focus-within:text-accent transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Search in board..." 
-              className="glass-input pl-11 h-12 text-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            {isAdmin && (
+              <button 
+                onClick={() => navigate(`/projects/${id}/settings`)}
+                className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent hover:bg-accent hover:text-white transition-all"
+              >
+                <UserPlus className="w-5 h-5" />
+              </button>
+            )}
           </div>
-          <button className="btn btn-secondary h-12 px-5">
-            <Filter className="w-4 h-4" /> <span>Filters</span>
-          </button>
-          {project?.members?.find(m => m.userId === user?.id)?.role === 'ADMIN' ? (
-            <Link to={`/projects/${id}/settings`} className="btn btn-secondary h-12 w-12 !px-0">
-              <Settings className="w-5 h-5" />
-            </Link>
-          ) : (
-            <button 
-              onClick={handleLeaveProject}
-              className="btn btn-secondary h-12 px-5 flex items-center gap-2 text-rose-500 hover:bg-rose-500/10 border-rose-500/20"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Leave</span>
+
+          <div className="h-8 w-px bg-white/5 hidden sm:block" />
+
+          <div className="flex items-center gap-3">
+            <div className="relative group flex-1 min-w-[200px]">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-focus-within:text-accent transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                className="glass-input pl-11 h-11 text-xs"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <button className="btn btn-secondary h-11 px-4 text-xs">
+              <Filter className="w-4 h-4" /> <span className="hidden sm:inline">Filters</span>
             </button>
-          )}
+            {isAdmin ? (
+              <Link to={`/projects/${id}/settings`} className="btn btn-secondary h-11 w-11 !px-0">
+                <Settings className="w-4 h-4" />
+              </Link>
+            ) : (
+              <button 
+                onClick={handleLeaveProject}
+                className="btn btn-secondary h-11 px-4 flex items-center gap-2 text-rose-500 hover:bg-rose-500/10 border-rose-500/20 text-xs"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Leave</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
