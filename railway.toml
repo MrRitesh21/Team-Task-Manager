@@ -1,5 +1,3 @@
-[build]
-builder = "nixpacks"
 
 [[services]]
 name = "server"
@@ -12,7 +10,7 @@ PORT = "8080"
 [[services]]
 name = "client"
 source = "client"
-buildCommand = "npm run build"
+buildCommand = "npm install && npm run build"
 startCommand = "npm run preview -- --host 0.0.0.0 --port 3000"
 
 [services.client.env]
