@@ -110,6 +110,16 @@ const getProjectById = async (req, res) => {
       return res.status(404).json({ error: 'Project not found.' });
     }
 
+    // Migration safety: Ensure every project has an invite code
+    if (!project.inviteCode) {
+      const inviteCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+      project.inviteCode = inviteCode;
+      await prisma.project.update({
+        where: { id: project.id },
+        data: { inviteCode }
+      });
+    }
+
     res.json(project);
   } catch (error) {
     res.status(500).json({ error: 'Internal server error.' });
