@@ -13,8 +13,7 @@ import {
   Layers,
   ChevronRight,
   MoreVertical,
-  CheckCircle2,
-  Trash2
+  CheckCircle2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
