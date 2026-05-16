@@ -1,7 +1,10 @@
+[build]
+builder = "nixpacks"
 
 [[services]]
 name = "server"
 source = "server"
+buildCommand = "npm install && npx prisma generate"
 startCommand = "node server.js"
 
 [services.server.env]

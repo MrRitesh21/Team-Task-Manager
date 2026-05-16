@@ -5,6 +5,7 @@
   "description": "Team Task Manager Monorepo",
   "scripts": {
     "install:all": "npm install --prefix client && npm install --prefix server",
-    "build:all": "npm run build --prefix client"
+    "build:all": "npm run build --prefix client",
+    "start": "echo 'Please use railway.toml services to start the application'"
   }
 }
