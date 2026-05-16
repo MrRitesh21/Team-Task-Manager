@@ -4,7 +4,7 @@ builder = "nixpacks"
 [[services]]
 name = "server"
 source = "server"
-buildCommand = "npm install && npx prisma generate && npx prisma db push --accept-data-loss"
+buildCommand = "npm run railway-build"
 startCommand = "node server.js"
 
 [services.server.env]

@@ -30,6 +30,14 @@ async function main() {
     console.log('Attempting to connect to database...');
     await prisma.$connect();
     console.log('✅ Connected to database successfully');
+
+    // Programmatically push schema to ensure tables exist
+    if (process.env.NODE_ENV === 'production') {
+      console.log('🔄 Syncing database schema...');
+      const { execSync } = require('child_process');
+      execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
+      console.log('✅ Database schema synced');
+    }
     
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server is running on port ${PORT}`);
