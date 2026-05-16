@@ -13,7 +13,7 @@ PORT = "8080"
 name = "client"
 source = "client"
 buildCommand = "npm run build"
-startCommand = "npm run preview"
+startCommand = "npm run preview -- --host 0.0.0.0 --port 3000"
 
 [services.client.env]
 PORT = "3000"
