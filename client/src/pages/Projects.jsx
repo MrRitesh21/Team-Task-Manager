@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { clsx } from 'clsx';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
