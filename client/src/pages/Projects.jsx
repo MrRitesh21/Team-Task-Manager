@@ -33,7 +33,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const { data } = await api.get('/projects');
+      const { data } = await api.get('projects');
       setProjects(data);
     } catch (error) {
       toast.error('Failed to load projects');
@@ -46,7 +46,7 @@ const Projects = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post('/projects', newProject);
+      await api.post('projects', newProject);
       toast.success('Project created!');
       setNewProject({ name: '', description: '' });
       setShowCreateModal(false);

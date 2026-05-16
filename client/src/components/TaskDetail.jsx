@@ -32,7 +32,7 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
 
   const fetchTask = async () => {
     try {
-      const { data } = await api.get(`/tasks/${taskId}`);
+      const { data } = await api.get(`tasks/${taskId}`);
       setTask(data);
     } catch (error) {
       toast.error('Failed to load task details');
@@ -47,7 +47,7 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
     if (!newComment.trim()) return;
     setCommenting(true);
     try {
-      await api.post(`/tasks/${taskId}/comments`, { content: newComment });
+      await api.post(`tasks/${taskId}/comments`, { content: newComment });
       setNewComment('');
       fetchTask();
     } catch (error) {
@@ -59,7 +59,7 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
 
   const updateTask = async (updates) => {
     try {
-      await api.patch(`/tasks/${taskId}`, updates);
+      await api.patch(`tasks/${taskId}`, updates);
       fetchTask();
       onUpdate();
     } catch (error) {

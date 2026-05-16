@@ -25,14 +25,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const { data } = await api.post('/auth/login', { email, password });
+    const { data } = await api.post('auth/login', { email, password });
     localStorage.setItem('token', data.accessToken);
     setUser(data.user);
     return data;
   };
 
   const register = async (name, email, password) => {
-    const { data } = await api.post('/auth/register', { name, email, password });
+    const { data } = await api.post('auth/register', { name, email, password });
     localStorage.setItem('token', data.accessToken);
     setUser(data.user);
     return data;
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post('/auth/logout');
+      await api.post('auth/logout');
     } catch (error) {
       console.error('Logout error', error);
     }

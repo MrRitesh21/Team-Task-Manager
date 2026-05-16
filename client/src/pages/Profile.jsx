@@ -47,7 +47,7 @@ const Profile = () => {
     try {
       // Assuming api is accessible or use a service
       const api = (await import('../services/api')).default;
-      await api.patch('/users/password', {
+      await api.patch('users/password', {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       });

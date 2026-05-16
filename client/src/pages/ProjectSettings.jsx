@@ -29,7 +29,7 @@ const ProjectSettings = () => {
 
   const fetchProject = async () => {
     try {
-      const { data } = await api.get(`/projects/${id}`);
+      const { data } = await api.get(`projects/${id}`);
       setProject(data);
     } catch (error) {
       toast.error('Failed to load project settings');
@@ -43,7 +43,7 @@ const ProjectSettings = () => {
     e.preventDefault();
     setUpdating(true);
     try {
-      await api.patch(`/projects/${id}`, {
+      await api.patch(`projects/${id}`, {
         name: project.name,
         description: project.description
       });
@@ -59,7 +59,7 @@ const ProjectSettings = () => {
     e.preventDefault();
     setInviting(true);
     try {
-      const { data } = await api.post(`/projects/${id}/members`, { email: inviteEmail, role: 'MEMBER' });
+      const { data } = await api.post(`projects/${id}/members`, { email: inviteEmail, role: 'MEMBER' });
       setProject({ ...project, members: [...project.members, data] });
       setInviteEmail('');
       toast.success('Member added!');
@@ -73,7 +73,7 @@ const ProjectSettings = () => {
   const handleRemoveMember = async (userId) => {
     if (!window.confirm('Remove this member from the project?')) return;
     try {
-      await api.delete(`/projects/${id}/members/${userId}`);
+      await api.delete(`projects/${id}/members/${userId}`);
       setProject({
         ...project,
         members: project.members.filter(m => m.userId !== userId)
@@ -86,7 +86,7 @@ const ProjectSettings = () => {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      await api.patch(`/projects/${id}/members/${userId}`, { role: newRole });
+      await api.patch(`projects/${id}/members/${userId}`, { role: newRole });
       setProject({
         ...project,
         members: project.members.map(m => m.userId === userId ? { ...m, role: newRole } : m)
@@ -103,7 +103,7 @@ const ProjectSettings = () => {
       return;
     }
     try {
-      await api.delete(`/projects/${id}`);
+      await api.delete(`projects/${id}`);
       toast.success('Project deleted');
       navigate('/projects');
     } catch (error) {

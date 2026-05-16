@@ -158,8 +158,8 @@ const ProjectBoard = () => {
   const fetchProjectData = async () => {
     try {
       const [projRes, tasksRes] = await Promise.all([
-        api.get(`/projects/${id}`),
-        api.get(`/tasks/project/${id}`)
+        api.get(`projects/${id}`),
+        api.get(`tasks/project/${id}`)
       ]);
       setProject(projRes.data);
       setTasks(tasksRes.data);
@@ -245,7 +245,7 @@ const ProjectBoard = () => {
     }
 
     try {
-      await api.patch(`/tasks/${activeId}`, { status: newStatus });
+      await api.patch(`tasks/${activeId}`, { status: newStatus });
     } catch (error) {
       toast.error('Failed to save changes');
       fetchProjectData();
@@ -363,7 +363,7 @@ const CreateTaskModal = ({ projectId, status, members, onClose, onCreated }) => 
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await api.post(`/tasks/project/${projectId}`, { ...formData, status });
+      const { data } = await api.post(`tasks/project/${projectId}`, { ...formData, status });
       toast.success('Task created');
       onCreated(data);
     } catch (error) {
