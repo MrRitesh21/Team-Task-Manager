@@ -31,7 +31,9 @@ const Auth = () => {
       }
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Authentication failed');
+      console.error('Full Auth Error:', error);
+      const message = error.response?.data?.error || error.message || 'Authentication failed';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

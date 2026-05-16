@@ -9,8 +9,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: true, // Allow all origins for testing
-  credentials: true
+  origin: "https://team-task-manager-pxfg.vercel.app",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(cookieParser());
