@@ -151,7 +151,15 @@ const Projects = () => {
                 </div>
 
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold font-heading mb-3 group-hover:text-accent transition-colors">{project?.name}</h2>
+                  <div className="flex items-center gap-3 mb-3">
+                    <h2 className="text-2xl font-bold font-heading group-hover:text-accent transition-colors">{project?.name}</h2>
+                    <span className={clsx(
+                      "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest",
+                      project.role === 'ADMIN' ? "bg-accent/10 text-accent border border-accent/20" : "bg-white/5 text-muted border border-white/10"
+                    )}>
+                      {project.role}
+                    </span>
+                  </div>
                   <p className="text-muted text-sm line-clamp-2 leading-relaxed">{project.description || 'No description provided for this project.'}</p>
                 </div>
 
