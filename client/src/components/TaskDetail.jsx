@@ -198,7 +198,7 @@ const TaskDetail = ({ taskId, onClose, onUpdate }) => {
               </div>
 
               <div className="space-y-6">
-                {task.comments.?.map((comment) => (
+                {task.comments?.map((comment) => (
                   <div key={comment.id} className="flex gap-4 group">
                     <img 
                       src={comment.author.avatar || `https://ui-avatars.com/api/?name=${comment.author.name}&background=4F8EF7&color=fff`} 

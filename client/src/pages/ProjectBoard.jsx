@@ -310,7 +310,7 @@ const ProjectBoard = () => {
       <div className="flex-1 overflow-x-auto min-h-0 no-scrollbar">
         <div className="flex gap-8 h-full">
           <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
-            {COLUMNS.?.map((col) => (
+            {COLUMNS?.map((col) => (
               <div key={col.id} className="flex flex-col w-[340px] shrink-0 h-full">
                 <div className="flex items-center justify-between mb-6 px-2">
                   <div className="flex items-center gap-3">
@@ -326,9 +326,9 @@ const ProjectBoard = () => {
                 </div>
 
                 <div className="flex-1 bg-white/[0.01] border border-white/[0.03] rounded-3xl p-3 min-h-[300px] overflow-y-auto no-scrollbar shadow-inner">
-                  <SortableContext id={col.id} items={tasksByStatus[col.id].?.map(t => t.id)} strategy={verticalListSortingStrategy}>
+                  <SortableContext id={col.id} items={tasksByStatus[col.id]?.map(t => t.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-1 min-h-[50px]">
-                      {tasksByStatus[col.id].?.map((task) => (
+                      {tasksByStatus[col.id]?.map((task) => (
                         <TaskCard key={task.id} task={task} onClick={setSelectedTask} />
                       ))}
                     </div>
@@ -414,7 +414,7 @@ const CreateTaskModal = ({ projectId, status, members, onClose, onCreated }) => 
             <label className="label">Responsible Member</label>
             <select className="glass-input text-sm" value={formData.assigneeId} onChange={e => setFormData({...formData, assigneeId: e.target.value})}>
               <option value="">Unassigned</option>
-              {members.?.map(m => ( <option key={m.userId} value={m.userId}>{m.user.name}</option> ))}
+              {members?.map(m => ( <option key={m.userId} value={m.userId}>{m.user.name}</option> ))}
             </select>
           </div>
           <div className="space-y-2">

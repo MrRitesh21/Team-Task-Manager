@@ -85,7 +85,7 @@ const Dashboard = () => {
         animate="show"
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
       >
-        {statCards.?.map((stat) => (
+        {statCards?.map((stat) => (
           <motion.div 
             key={stat.label} 
             variants={item}
@@ -129,7 +129,7 @@ const Dashboard = () => {
                 <p className="text-muted font-medium">All caught up! No tasks pending.</p>
               </div>
             ) : (
-              stats?.myTasks.?.map((task) => (
+              stats?.myTasks?.map((task) => (
                 <div key={task.id} className="group card p-1 bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300">
                   <div className="p-4 flex items-center justify-between gap-6">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -212,7 +212,7 @@ const Dashboard = () => {
             {stats?.recentActivity.length === 0 ? (
               <p className="text-center text-muted py-8 italic">Silence is golden...</p>
             ) : (
-              stats?.recentActivity.?.map((activity, idx) => (
+              stats?.recentActivity?.map((activity, idx) => (
                 <div key={activity.id} className="flex gap-5 relative">
                   {idx !== stats.recentActivity.length - 1 && (
                     <div className="absolute left-[19px] top-10 bottom-[-32px] w-[2px] bg-gradient-to-b from-white/10 to-transparent" />

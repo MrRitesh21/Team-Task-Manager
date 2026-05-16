@@ -75,7 +75,7 @@ const Layout = () => {
 
           <nav className="flex-1 px-4 space-y-2 mt-4">
             <p className="px-4 text-[10px] font-bold text-muted/50 uppercase tracking-[0.2em] mb-4">Navigation</p>
-            {navigation.?.map((item) => (
+            {navigation?.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}

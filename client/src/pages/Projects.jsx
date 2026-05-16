@@ -104,7 +104,7 @@ const Projects = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <AnimatePresence>
-          {filteredProjects.?.map((project, idx) => (
+          {filteredProjects?.map((project, idx) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 20 }}
@@ -119,7 +119,7 @@ const Projects = () => {
                     {project.name.charAt(0)}
                   </div>
                   <div className="flex -space-x-2">
-                    {project.members.?.slice(0, 3).?.map((m, i) => (
+                    {project.members?.slice(0, 3)?.map((m, i) => (
                       <img 
                         key={i} 
                         src={m.user?.avatar || `https://i.pravatar.cc/100?u=${m.userId}`} 
