@@ -7,7 +7,8 @@ const {
   deleteProject,
   addMember,
   removeMember,
-  updateMemberRole
+  updateMemberRole,
+  joinProjectByCode
 } = require('../controllers/project.controller');
 const { authenticate, requireProjectRole } = require('../middleware/auth.middleware');
 

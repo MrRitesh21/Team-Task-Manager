@@ -21,6 +21,7 @@ const ProjectSettings = () => {
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('MEMBER');
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [updating, setUpdating] = useState(false);
 
@@ -45,7 +46,7 @@ const ProjectSettings = () => {
     setUpdating(true);
     try {
       await api.patch(`projects/${id}`, {
-        name: project?.name,
+        name: project.name,
         description: project.description
       });
       toast.success('Project updated');
@@ -60,9 +61,10 @@ const ProjectSettings = () => {
     e.preventDefault();
     setInviting(true);
     try {
-      const { data } = await api.post(`projects/${id}/members`, { email: inviteEmail, role: 'MEMBER' });
+      const { data } = await api.post(`projects/${id}/members`, { email: inviteEmail, role: inviteRole });
       setProject({ ...project, members: [...project.members, data] });
       setInviteEmail('');
+      setInviteRole('MEMBER');
       toast.success('Member added!');
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to invite user');
@@ -179,22 +181,32 @@ const ProjectSettings = () => {
         </div>
 
         <div className="card space-y-6">
-          <form onSubmit={handleInvite} className="flex gap-2">
+          <form onSubmit={handleInvite} className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
               <input 
                 type="email" 
                 placeholder="Collaborator email address..." 
-                className="input pl-10"
+                className="input pl-10 h-12"
                 value={inviteEmail}
                 onChange={e => setInviteEmail(e.target.value)}
                 required
               />
             </div>
-            <button type="submit" disabled={inviting} className="btn btn-primary flex items-center gap-2">
-              {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
-              <span>Invite</span>
-            </button>
+            <div className="flex gap-2">
+              <select 
+                className="input w-32 h-12 px-3 text-xs font-bold uppercase tracking-widest bg-white/5"
+                value={inviteRole}
+                onChange={e => setInviteRole(e.target.value)}
+              >
+                <option value="MEMBER">Member</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+              <button type="submit" disabled={inviting} className="btn btn-primary h-12 px-6 flex items-center gap-2">
+                {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                <span className="font-bold text-xs uppercase tracking-widest">Invite</span>
+              </button>
+            </div>
           </form>
 
           <div className="divide-y divide-gray-800">
