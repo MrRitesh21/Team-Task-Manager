@@ -9,6 +9,18 @@ const getProjects = async (req, res) => {
       include: {
         project: {
           include: {
+            members: {
+              take: 5,
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatar: true
+                  }
+                }
+              }
+            },
             _count: {
               select: {
                 members: true,

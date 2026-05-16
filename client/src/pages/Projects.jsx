@@ -104,7 +104,7 @@ const Projects = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <AnimatePresence>
-          {filteredProjects.map((project, idx) => (
+          {filteredProjects.?.map((project, idx) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 20 }}
@@ -119,17 +119,17 @@ const Projects = () => {
                     {project.name.charAt(0)}
                   </div>
                   <div className="flex -space-x-2">
-                    {project.members.slice(0, 3).map((m, i) => (
+                    {project.members.?.slice(0, 3).?.map((m, i) => (
                       <img 
                         key={i} 
-                        src={`https://i.pravatar.cc/100?u=${m.userId}`} 
+                        src={m.user?.avatar || `https://i.pravatar.cc/100?u=${m.userId}`} 
                         className="w-8 h-8 rounded-lg border-2 border-[#050505] object-cover" 
                         alt="" 
                       />
                     ))}
-                    {project.members.length > 3 && (
+                    {(project.members?.length || 0) > 3 && (
                       <div className="w-8 h-8 rounded-lg border-2 border-[#050505] bg-surface flex items-center justify-center text-[10px] font-bold text-muted">
-                        +{project.members.length - 3}
+                        +{(project.members?.length || 0) - 3}
                       </div>
                     )}
                   </div>
@@ -148,7 +148,7 @@ const Projects = () => {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <UsersIcon className="w-3.5 h-3.5" />
-                      <span>{project.members.length} Members</span>
+                      <span>{project?.members?.length} Members</span>
                     </div>
                   </div>
                   <ArrowUpRight className="w-5 h-5 text-muted group-hover:text-accent transition-all group-hover:translate-x-1 group-hover:-translate-y-1" />

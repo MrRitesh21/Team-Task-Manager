@@ -89,7 +89,7 @@ const ProjectSettings = () => {
       await api.patch(`projects/${id}/members/${userId}`, { role: newRole });
       setProject({
         ...project,
-        members: project.members.map(m => m.userId === userId ? { ...m, role: newRole } : m)
+        members: project.members.?.map(m => m.userId === userId ? { ...m, role: newRole } : m)
       });
       toast.success('Role updated');
     } catch (error) {
@@ -153,7 +153,7 @@ const ProjectSettings = () => {
       <section className="space-y-6">
         <div className="flex items-center justify-between border-b border-gray-800 pb-2">
           <h2 className="text-xl font-bold">Team Members</h2>
-          <span className="text-xs font-medium text-muted uppercase tracking-wider">{project.members.length} Total</span>
+          <span className="text-xs font-medium text-muted uppercase tracking-wider">{project?.members?.length} Total</span>
         </div>
 
         <div className="card space-y-6">
@@ -176,7 +176,7 @@ const ProjectSettings = () => {
           </form>
 
           <div className="divide-y divide-gray-800">
-            {project.members.map((member) => (
+            {project.members.?.map((member) => (
               <div key={member.userId} className="py-4 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <img 
