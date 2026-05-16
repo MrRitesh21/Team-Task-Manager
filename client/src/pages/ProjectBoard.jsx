@@ -326,6 +326,7 @@ const ProjectBoard = () => {
               <Settings className="w-5 h-5" />
             </Link>
           )}
+          </div>
         </div>
       </div>
 
