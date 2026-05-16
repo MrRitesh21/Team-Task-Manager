@@ -6,7 +6,14 @@ name = "server"
 source = "server"
 startCommand = "node server.js"
 
+[services.server.env]
+PORT = "8080"
+
 [[services]]
 name = "client"
 source = "client"
+buildCommand = "npm run build"
 startCommand = "npm run preview"
+
+[services.client.env]
+PORT = "3000"
